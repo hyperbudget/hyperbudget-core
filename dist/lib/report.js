@@ -8,6 +8,13 @@ class ReportImpl {
         this.transactions = [];
         this.transactions_org = [];
     }
+    filter_month(month) {
+        if (!this.transactions) {
+            throw new Error("No transactions yet");
+        }
+        this.transactions_org = this.transactions.filter(txn => txn.org_month === month);
+        this.transactions = this.transactions.filter(txn => txn.month === month);
+    }
 }
 class ReportFactory {
     constructor(options) {
@@ -41,13 +48,6 @@ class ReportFactory {
         }.bind(this));
         this.report.transactions = this.report.transactions.concat(transactions);
         return new Promise((resolve, reject) => resolve());
-    }
-    filter_month(month) {
-        if (!this.report || !this.report.transactions) {
-            throw new Error("No transactions yet");
-        }
-        this.report.transactions_org = this.report.transactions.filter(txn => txn.org_month === month);
-        this.report.transactions = this.report.transactions.filter(txn => txn.month === month);
     }
 }
 exports.ReportFactory = ReportFactory;

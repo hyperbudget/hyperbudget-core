@@ -5,6 +5,7 @@ export declare type ReportOptionsType = {
 export interface Report {
     transactions: Transaction[];
     transactions_org: Transaction[];
+    filter_month(month: string): void;
 }
 export declare class ReportFactory {
     private _report;
@@ -14,6 +15,5 @@ export declare class ReportFactory {
     from_csv(csv_text: string, type: string): Promise<void>;
     from_records(records: any): Promise<void>;
     add_records(records: any): Promise<void>;
-    filter_month(month: string): void;
 }
 export default ReportFactory;
