@@ -14,7 +14,7 @@ class ReportManager {
             return Promise.resolve();
         }
         return new Promise((resolve, reject) => (fs_1.default.readFile(csvs[idx].name, (err, result) => err ? reject(err) : resolve(result.toString()))))
-            .then((csv_text) => csvparsermanager_1.CSVParserManager.parseCSVFile(csvs[idx].name, csvs[idx].type))
+            .then((csv_text) => csvparsermanager_1.CSVParserManager.parseCSVFile(csv_text, csvs[idx].type))
             .then(function (new_records) {
             records = records.concat(new_records);
             if (idx !== csvs.length - 1) {

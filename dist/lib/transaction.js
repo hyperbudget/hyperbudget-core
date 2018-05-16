@@ -61,7 +61,7 @@ class Transaction {
     static _extract_date_format_based_on_source(src) {
         let format;
         switch (src) {
-            case 'fairfx-corp':
+            case 'FairFX Corp':
                 format = options_1.Options.DATE_FORMAT_SANE;
                 break;
             default:
