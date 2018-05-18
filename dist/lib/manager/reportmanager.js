@@ -1,30 +1,12 @@
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 const categoriser_1 = require("../categoriser");
 const utils_1 = require("../utils");
-const csvparsermanager_1 = require("./csvparsermanager");
 const moment_1 = __importDefault(require("moment"));
-const fs_1 = __importDefault(require("fs"));
 class ReportManager {
-    static add_csvs(rf, csvs, idx = 0, records = []) {
-        if (!csvs.length) {
-            return Promise.resolve();
-        }
-        return new Promise((resolve, reject) => (fs_1.default.readFile(csvs[idx].name, (err, result) => err ? reject(err) : resolve(result.toString()))))
-            .then((csv_text) => csvparsermanager_1.CSVParserManager.parseCSVFile(csv_text, csvs[idx].type))
-            .then(function (new_records) {
-            records = records.concat(new_records);
-            if (idx !== csvs.length - 1) {
-                return ReportManager.add_csvs(rf, csvs, idx + 1, records);
-            }
-            else {
-                return rf.add_records(records);
-            }
-        });
-    }
     static generate_web_frontend_report(txns) {
         let formatted = JSON.parse(JSON.stringify(txns));
         let running_total_spend = 0;
