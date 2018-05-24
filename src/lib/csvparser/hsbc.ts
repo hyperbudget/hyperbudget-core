@@ -38,6 +38,11 @@ export class HSBCCSVParser extends CSVParser {
 
         if (type_from_desc_match && type_from_desc_match.length >= 2) {
           record.txn_type = HSBCTransTypes[type_from_desc_match[1]];
+
+          // VISA network atm withdrawals?
+          if (record.txn_type === 'DEB' && !!record.txn_desc.match(/^CASH /)) {
+            record.txn_type = 'CPT';
+          }
         }
 
         record.txn_src = 'HSBC';
