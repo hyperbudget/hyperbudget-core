@@ -72,8 +72,8 @@ export class ReportManager {
       formatted_txn.category_names = formatted_txn.categories.filter((c: Category) => !c.hidden_on_txn_list)
       .map((c:Category) => c.name).join(", ");
 
-      formatted_txn.creditAmount_str = Utils.format_number(formatted_txn.creditAmount);
-      formatted_txn.debitAmount_str  = Utils.format_number(formatted_txn.debitAmount);
+      formatted_txn.creditAmountStr = Utils.format_number(formatted_txn.creditAmount);
+      formatted_txn.debitAmountStr  = Utils.format_number(formatted_txn.debitAmount);
       formatted_txn.accountBalance_str       = Utils.format_number(formatted_txn.accountBalance);
 
       formatted_txn.date              = moment(formatted_txn.date).utc().format('YYYY-MM-DD');

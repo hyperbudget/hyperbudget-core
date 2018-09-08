@@ -18,8 +18,8 @@ export type FormattedTransaction = {
   debitAmount:  number;
   accountBalance:  number;
 
-  creditAmount_str:  string;
-  debitAmount_str:  string;
+  creditAmountStr:  string;
+  debitAmountStr:  string;
   accountBalance_str:  string;
 
   date: string;
