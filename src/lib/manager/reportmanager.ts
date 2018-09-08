@@ -12,6 +12,54 @@ import moment from 'moment';
 import parse from 'csv-parse';
 import { BreakdownFormatted, Breakdown } from '../../types/breakdown';
 
+/**
+ * Temporary business logic wrapper to aid refactoring
+ */
+export class ReportBusinessLogic {
+  rf: ReportFactory;
+
+  constructor() {
+    this.rf = new ReportFactory();
+  }
+  addTransactionsFromObject (records: any[]) {
+    return this.rf.add_records(records).then(() => (
+      this.translatedTransactions()
+    ));
+  }
+  addTransactionsFromCSV (csv_text: string, source: string) {
+    return this.rf.from_csv(csv_text, source).then(() => (
+      this.translatedTransactions()
+    ))
+  }
+  categoriseTransactions(categories: Category[]) {
+    const categoriser = new Categoriser(categories);
+    return categoriser.categorise_transactions(this.rf.report.transactions).then(() => (
+      this.translatedTransactions()
+    ));
+  }
+  filterTransactionsByMonth(month: string) {
+    this.rf.report.filter_month(month);
+    return this.translatedTransactions();
+  }
+  translatedTransactions() {
+    return this.rf.report.transactions.map((txn: Transaction) => ({
+      identifier: txn.identifier,
+      date: txn.txn_date,
+      type: txn.txn_type,
+      description: txn.txn_desc,
+      accountSortcode: txn.acc_sortcode,
+      accountNumber: txn.acc_number,
+      accountBalance: txn.acc_balance,
+      debitAmount: txn.txn_amount_debit,
+      creditAmount: txn.txn_amount_credit,
+      source: txn.txn_src,
+      categoryIds: txn.categories.map(cat => cat.id),
+      calculatedMonth: txn.month,
+      calendarMonth: txn.org_month,
+    }));
+  }
+}
+
 export class ReportManager {
   static generate_web_frontend_report (txns: Transaction[]): FormattedTransaction[] {
     let formatted: FormattedTransaction[] = JSON.parse(JSON.stringify(txns));
