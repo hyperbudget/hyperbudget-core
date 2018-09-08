@@ -41,6 +41,10 @@ export class ReportBusinessLogic {
     this.rf.report.filter_month(month);
     return this.translatedTransactions();
   }
+  resetFilter() {
+    this.rf.report.reset_filter();
+    return this.translatedTransactions();
+  }
   translatedTransactions() {
     return this.rf.report.transactions.map((txn: Transaction) => ({
       identifier: txn.identifier,

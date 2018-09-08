@@ -2,7 +2,6 @@ import snapshot from 'snap-shot-it';
 import { ReportBusinessLogic } from '../src/lib/manager/reportmanager';
 import { Category } from '../src/types/category';
 import { RuleMatchMode } from '../src/lib/enums';
-import { expect } from 'chai';
 
 describe('Report Business Logic', () => {
   it('adds transactions from object', async () => {
@@ -495,5 +494,7 @@ describe('Report Business Logic', () => {
     snapshot(logic.filterTransactionsByMonth('201701'));
     snapshot(logic.filterTransactionsByMonth('201702'));
     snapshot(logic.filterTransactionsByMonth('201712'));
+
+    snapshot(logic.resetFilter());
   });
 })
