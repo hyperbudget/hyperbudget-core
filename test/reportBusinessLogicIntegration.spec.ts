@@ -6,24 +6,24 @@ import { RuleMatchMode } from '../src/lib/enums';
 describe('Report Business Logic', () => {
   it('adds transactions from object', async () => {
     const records = [{
-      txn_date: '2018-01-01T00:00:00Z',
-      txn_amount_debit: 1000,
-      txn_desc: 'Foobar',
-      txn_type: 'DD',
-      acc_sortcode: '01-02-03',
-      acc_number: '12345678',
-      acc_balance: 1050,
-      txn_src: 'lloyds',
+      date: '2018-01-01T00:00:00Z',
+      debitAmount: 1000,
+      description: 'Foobar',
+      type: 'DD',
+      accountSortCode: '01-02-03',
+      accountNumber: '12345678',
+      accountBalance: 1050,
+      source: 'lloyds',
     }, {
-      txn_date: '2018-08-15T00:00:00Z',
-      txn_amount_debit: 0,
-      txn_amount_credit: 2000,
-      txn_desc: 'CELERY',
-      txn_type: 'FPI',
-      acc_sortcode: '01-02-03',
-      acc_number: '12345678',
-      acc_balance: 3050,
-      txn_src: 'lloyds',
+      date: '2018-08-15T00:00:00Z',
+      debitAmount: 0,
+      creditAmount: 2000,
+      description: 'CELERY',
+      type: 'FPI',
+      accountSortCode: '01-02-03',
+      accountNumber: '12345678',
+      accountBalance: 3050,
+      source: 'lloyds',
     }];
 
     const logic = new ReportBusinessLogic();
@@ -35,13 +35,13 @@ describe('Report Business Logic', () => {
     const categories: Category[] = [{
       "name": "Income",
       "category_rules": {
-        "txn_amount_credit": {
+        "creditAmount": {
           "mode": RuleMatchMode.Strict,
           "rules": [
             [">", 0]
           ]
         },
-        "txn_desc": {
+        "description": {
           "mode": RuleMatchMode.Strict,
           "rules": [
             ["!~", "J DOE"],
@@ -53,12 +53,12 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Main Income",
       "category_rules": {
-        "txn_amount_credit": {
+        "creditAmount": {
           "rules": [
             [">", 1000]
           ]
         },
-        "txn_desc": {
+        "description": {
           "rules": [
             ["!~", "J DOE"],
           ]
@@ -70,12 +70,12 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Expenditure",
       "category_rules": {
-        "txn_amount_debit": {
+        "debitAmount": {
           "rules": [
             [">", 0]
           ]
         },
-        "txn_desc": {
+        "description": {
           "rules": [
             ["!~", "J DOE"],
           ]
@@ -86,12 +86,12 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Refunds",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "DEB"]
           ]
         },
-        "txn_amount_credit": {
+        "creditAmount": {
           "rules": [
             [">", 0]
           ]
@@ -102,7 +102,7 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Bills",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "DD"]
           ]
@@ -113,7 +113,7 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Rent",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "SO"]
           ]
@@ -125,7 +125,7 @@ describe('Report Business Logic', () => {
     {
       "name": "Rent: Bring back",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "SO"]
           ]
@@ -144,12 +144,12 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Bills - bring forward",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "DD"]
           ]
         },
-        "txn_desc": {
+        "description": {
           "mode": RuleMatchMode.Strict,
           "rules": [
             ["=~", "ELECTRICITY CORP INC"]
@@ -169,7 +169,7 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Cash Withdrawals",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "CPT"]
           ]
@@ -180,7 +180,7 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Personal Bank Transfers",
       "category_rules": {
-        "txn_desc": {
+        "description": {
           "rules": [
             ["=~", "J DOE"]
           ]
@@ -192,67 +192,67 @@ describe('Report Business Logic', () => {
     }];
     const records = [
       {
-        txn_date            : '01/01/2017',
-        txn_type            : 'FPO',
-        txn_desc            : 'TFR J DOE',
-        txn_amount_credit   : 0,
-        txn_amount_debit    : 2000,
+        date            : '01/01/2017',
+        type            : 'FPO',
+        description            : 'TFR J DOE',
+        creditAmount   : 0,
+        debitAmount    : 2000,
       },
       {
-        txn_date: '01/01/2017',
-        txn_type: 'DD',
-        txn_desc: 'ELECTRICITY CORP INC',
-        txn_amount_debit: 80.12,
-        txn_amount_credit: 0,
+        date: '01/01/2017',
+        type: 'DD',
+        description: 'ELECTRICITY CORP INC',
+        debitAmount: 80.12,
+        creditAmount: 0,
       },
       ({
-        txn_date: '31/01/2017',
-        txn_type: 'DD',
-        txn_desc: 'ELECTRICITY CORP INC',
-        txn_amount_debit: 75.24,
-        txn_amount_credit: 0,
+        date: '31/01/2017',
+        type: 'DD',
+        description: 'ELECTRICITY CORP INC',
+        debitAmount: 75.24,
+        creditAmount: 0,
       }),
       ({
-        txn_date: '31/01/2017',
-        txn_type: 'CPT',
-        txn_desc: 'LNK 10 DWNG STR LNDN GB',
-        txn_amount_debit:  0,
-        txn_amount_credit: 100,
+        date: '31/01/2017',
+        type: 'CPT',
+        description: 'LNK 10 DWNG STR LNDN GB',
+        debitAmount:  0,
+        creditAmount: 100,
       }),
       ({
-        txn_date: '16/01/2017',
-        txn_type: 'DD',
-        txn_desc: 'INTERNET',
-        txn_amount_debit: 34.99,
-        txn_amount_credit: 0,
+        date: '16/01/2017',
+        type: 'DD',
+        description: 'INTERNET',
+        debitAmount: 34.99,
+        creditAmount: 0,
       }),
       ({
-        txn_date: '29/01/2017',
-        txn_type: 'SO',
-        txn_desc: 'LANDLORD CORP',
-        txn_amount_debit: 500.00,
-        txn_amount_credit: 0,
+        date: '29/01/2017',
+        type: 'SO',
+        description: 'LANDLORD CORP',
+        debitAmount: 500.00,
+        creditAmount: 0,
       }),
       ({
-        txn_date: '20/01/2017',
-        txn_type: 'DEB',
-        txn_desc: 'PEAR COMPUTERS INC',
-        txn_amount_debit: 999.99,
-        txn_amount_credit: 0,
+        date: '20/01/2017',
+        type: 'DEB',
+        description: 'PEAR COMPUTERS INC',
+        debitAmount: 999.99,
+        creditAmount: 0,
       }),
       ({
-        txn_date: '31/12/2016',
-        txn_type: 'FPI',
-        txn_desc: 'MEGACORP SALARY',
-        txn_amount_debit: 0,
-        txn_amount_credit: 1500,
+        date: '31/12/2016',
+        type: 'FPI',
+        description: 'MEGACORP SALARY',
+        debitAmount: 0,
+        creditAmount: 1500,
       }),
       ({
-        txn_date: '31/12/2017',
-        txn_type: 'FPI',
-        txn_desc: 'EBAY SALES',
-        txn_amount_debit: 0,
-        txn_amount_credit: 50,
+        date: '31/12/2017',
+        type: 'FPI',
+        description: 'EBAY SALES',
+        debitAmount: 0,
+        creditAmount: 50,
       }),
     ];
 
@@ -265,13 +265,13 @@ describe('Report Business Logic', () => {
     const categories: Category[] = [{
       "name": "Income",
       "category_rules": {
-        "txn_amount_credit": {
+        "creditAmount": {
           "mode": RuleMatchMode.Strict,
           "rules": [
             [">", 0]
           ]
         },
-        "txn_desc": {
+        "description": {
           "mode": RuleMatchMode.Strict,
           "rules": [
             ["!~", "J DOE"],
@@ -283,12 +283,12 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Main Income",
       "category_rules": {
-        "txn_amount_credit": {
+        "creditAmount": {
           "rules": [
             [">", 1000]
           ]
         },
-        "txn_desc": {
+        "description": {
           "rules": [
             ["!~", "J DOE"],
           ]
@@ -300,12 +300,12 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Expenditure",
       "category_rules": {
-        "txn_amount_debit": {
+        "debitAmount": {
           "rules": [
             [">", 0]
           ]
         },
-        "txn_desc": {
+        "description": {
           "rules": [
             ["!~", "J DOE"],
           ]
@@ -316,12 +316,12 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Refunds",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "DEB"]
           ]
         },
-        "txn_amount_credit": {
+        "creditAmount": {
           "rules": [
             [">", 0]
           ]
@@ -332,7 +332,7 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Bills",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "DD"]
           ]
@@ -343,7 +343,7 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Rent",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "SO"]
           ]
@@ -355,7 +355,7 @@ describe('Report Business Logic', () => {
     {
       "name": "Rent: Bring back",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "SO"]
           ]
@@ -374,12 +374,12 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Bills - bring forward",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "DD"]
           ]
         },
-        "txn_desc": {
+        "description": {
           "mode": RuleMatchMode.Strict,
           "rules": [
             ["=~", "ELECTRICITY CORP INC"]
@@ -399,7 +399,7 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Cash Withdrawals",
       "category_rules": {
-        "txn_type": {
+        "type": {
           "rules": [
             ["=", "CPT"]
           ]
@@ -410,7 +410,7 @@ describe('Report Business Logic', () => {
     }, {
       "name": "Personal Bank Transfers",
       "category_rules": {
-        "txn_desc": {
+        "description": {
           "rules": [
             ["=~", "J DOE"]
           ]
@@ -422,67 +422,67 @@ describe('Report Business Logic', () => {
     }];
     const records = [
       {
-        txn_date            : '01/01/2017',
-        txn_type            : 'FPO',
-        txn_desc            : 'TFR J DOE',
-        txn_amount_credit   : 0,
-        txn_amount_debit    : 2000,
+        date            : '01/01/2017',
+        type            : 'FPO',
+        description            : 'TFR J DOE',
+        creditAmount   : 0,
+        debitAmount    : 2000,
       },
       {
-        txn_date: '01/01/2017',
-        txn_type: 'DD',
-        txn_desc: 'ELECTRICITY CORP INC',
-        txn_amount_debit: 80.12,
-        txn_amount_credit: 0,
+        date: '01/01/2017',
+        type: 'DD',
+        description: 'ELECTRICITY CORP INC',
+        debitAmount: 80.12,
+        creditAmount: 0,
       },
       ({
-        txn_date: '31/01/2017',
-        txn_type: 'DD',
-        txn_desc: 'ELECTRICITY CORP INC',
-        txn_amount_debit: 75.24,
-        txn_amount_credit: 0,
+        date: '31/01/2017',
+        type: 'DD',
+        description: 'ELECTRICITY CORP INC',
+        debitAmount: 75.24,
+        creditAmount: 0,
       }),
       ({
-        txn_date: '31/01/2017',
-        txn_type: 'CPT',
-        txn_desc: 'LNK 10 DWNG STR LNDN GB',
-        txn_amount_debit:  0,
-        txn_amount_credit: 100,
+        date: '31/01/2017',
+        type: 'CPT',
+        description: 'LNK 10 DWNG STR LNDN GB',
+        debitAmount:  0,
+        creditAmount: 100,
       }),
       ({
-        txn_date: '16/01/2017',
-        txn_type: 'DD',
-        txn_desc: 'INTERNET',
-        txn_amount_debit: 34.99,
-        txn_amount_credit: 0,
+        date: '16/01/2017',
+        type: 'DD',
+        description: 'INTERNET',
+        debitAmount: 34.99,
+        creditAmount: 0,
       }),
       ({
-        txn_date: '29/01/2017',
-        txn_type: 'SO',
-        txn_desc: 'LANDLORD CORP',
-        txn_amount_debit: 500.00,
-        txn_amount_credit: 0,
+        date: '29/01/2017',
+        type: 'SO',
+        description: 'LANDLORD CORP',
+        debitAmount: 500.00,
+        creditAmount: 0,
       }),
       ({
-        txn_date: '20/01/2017',
-        txn_type: 'DEB',
-        txn_desc: 'PEAR COMPUTERS INC',
-        txn_amount_debit: 999.99,
-        txn_amount_credit: 0,
+        date: '20/01/2017',
+        type: 'DEB',
+        description: 'PEAR COMPUTERS INC',
+        debitAmount: 999.99,
+        creditAmount: 0,
       }),
       ({
-        txn_date: '31/12/2016',
-        txn_type: 'FPI',
-        txn_desc: 'MEGACORP SALARY',
-        txn_amount_debit: 0,
-        txn_amount_credit: 1500,
+        date: '31/12/2016',
+        type: 'FPI',
+        description: 'MEGACORP SALARY',
+        debitAmount: 0,
+        creditAmount: 1500,
       }),
       ({
-        txn_date: '31/12/2017',
-        txn_type: 'FPI',
-        txn_desc: 'EBAY SALES',
-        txn_amount_debit: 0,
-        txn_amount_credit: 50,
+        date: '31/12/2017',
+        type: 'FPI',
+        description: 'EBAY SALES',
+        debitAmount: 0,
+        creditAmount: 50,
       }),
     ];
 
