@@ -11,9 +11,12 @@ export class CSVParser {
           let name: string = this.txnMap[key];
           record[name] = record[key];
         }
-        delete record[key];
+        // bahahha, nice bug
+        if (key !== this.txnMap[key]) {
+          delete record[key];
+        }
       });
-      record.txn_src = this.srcName;
+      record.source = this.srcName;
     });
 
     return records;

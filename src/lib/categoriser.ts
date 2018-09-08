@@ -27,14 +27,14 @@ export class Categoriser {
   static transaction_matches_rule(txn: Transaction, rule: CategoryRule): boolean {
     let match: boolean = true;
 
-    ['txn_type', 'txn_desc', 'txn_src'].forEach((prop: string) => {
+    ['type', 'description', 'source'].forEach((prop: string) => {
       let match_config: StringMatchConfig = rule[prop];
       if (match_config) {
         match = match && RuleMatcher.parse_string_rules(txn[prop], match_config);
       }
     });
 
-    ['txn_amount_credit','txn_amount_debit'].forEach((prop: string) => {
+    ['creditAmount','debitAmount'].forEach((prop: string) => {
       let match_config: NumericMatchConfig = rule[prop];
 
       if (match_config) {
@@ -43,10 +43,10 @@ export class Categoriser {
     });
 
     //special case for day
-    if (rule['txn_day'] && txn.txn_date) {
+    if (rule['txn_day'] && txn.date) {
       let match_config: NumericMatchConfig = rule['txn_day'];
 
-      let day: number = moment(txn.txn_date).utc().date();
+      let day: number = moment(txn.date).utc().date();
       match = match && RuleMatcher.parse_number_rules(day, match_config);
     }
 
@@ -63,7 +63,7 @@ export class Categoriser {
 
         if (category.txn_month_modifier) {
           // do we want to bring this transaction 'backwards' or 'forwards'?
-          txn.month = moment(txn.txn_date).utc().add(category.txn_month_modifier, 'month').format('YYYYMM');
+          txn.calculatedMonth = moment(txn.date).utc().add(category.txn_month_modifier, 'month').format('YYYYMM');
         }
       }
     });

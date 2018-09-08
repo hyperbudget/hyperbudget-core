@@ -20,12 +20,12 @@ export class ReportBusinessLogic {
     this.rf = new ReportFactory();
   }
   addTransactionsFromObject (records: any[]) {
-    return this.rf.add_records(records).then(() => (
+    return this.rf.addRecords(records).then(() => (
       this.translatedTransactions()
     ));
   }
   addTransactionsFromCSV (csv_text: string, source: string) {
-    return this.rf.from_csv(csv_text, source).then(() => (
+    return this.rf.fromCSV(csv_text, source).then(() => (
       this.translatedTransactions()
     ))
   }
@@ -36,28 +36,28 @@ export class ReportBusinessLogic {
     ));
   }
   filterTransactionsByMonth(month: string) {
-    this.rf.report.filter_month(month);
+    this.rf.report.filterMonth(month);
     return this.translatedTransactions();
   }
   resetFilter() {
-    this.rf.report.reset_filter();
+    this.rf.report.resetFilter();
     return this.translatedTransactions();
   }
   translatedTransactions() {
     return this.rf.report.transactions.map((txn: Transaction) => ({
       identifier: txn.identifier,
-      date: txn.txn_date,
-      type: txn.txn_type,
-      description: txn.txn_desc,
-      accountSortcode: txn.acc_sortcode,
-      accountNumber: txn.acc_number,
-      accountBalance: txn.acc_balance,
-      debitAmount: txn.txn_amount_debit,
-      creditAmount: txn.txn_amount_credit,
-      source: txn.txn_src,
+      date: txn.date,
+      type: txn.type,
+      description: txn.description,
+      accountSortcode: txn.accountSortCode,
+      accountNumber: txn.accountNumber,
+      accountBalance: txn.accountBalance,
+      debitAmount: txn.debitAmount,
+      creditAmount: txn.creditAmount,
+      source: txn.source,
       categoryIds: txn.categories.map(cat => cat.id),
-      calculatedMonth: txn.month,
-      calendarMonth: txn.org_month,
+      calculatedMonth: txn.calculatedMonth,
+      calendarMonth: txn.calendarMonth,
     }));
   }
 }
@@ -72,16 +72,16 @@ export class ReportManager {
       formatted_txn.category_names = formatted_txn.categories.filter((c: Category) => !c.hidden_on_txn_list)
       .map((c:Category) => c.name).join(", ");
 
-      formatted_txn.txn_amount_credit_str = Utils.format_number(formatted_txn.txn_amount_credit);
-      formatted_txn.txn_amount_debit_str  = Utils.format_number(formatted_txn.txn_amount_debit);
-      formatted_txn.acc_balance_str       = Utils.format_number(formatted_txn.acc_balance);
+      formatted_txn.creditAmount_str = Utils.format_number(formatted_txn.creditAmount);
+      formatted_txn.debitAmount_str  = Utils.format_number(formatted_txn.debitAmount);
+      formatted_txn.accountBalance_str       = Utils.format_number(formatted_txn.accountBalance);
 
-      formatted_txn.txn_date              = moment(formatted_txn.txn_date).utc().format('YYYY-MM-DD');
+      formatted_txn.date              = moment(formatted_txn.date).utc().format('YYYY-MM-DD');
 
       let skip_running = formatted_txn.categories.find((c: Category) => c.hidden_on_running_total);
 
-      if (formatted_txn.txn_amount_debit && !skip_running) {
-        running_total_spend += Math.abs(formatted_txn.txn_amount_debit);
+      if (formatted_txn.debitAmount && !skip_running) {
+        running_total_spend += Math.abs(formatted_txn.debitAmount);
       }
 
       formatted_txn.running_total_spend = Utils.format_number(running_total_spend);
@@ -106,29 +106,29 @@ export class ReportManager {
         // It's the category being listed isn't internal_transfer but the txn cat is, skipit.
         if (! (cat.id !== 'tfr-pers' && Categoriser.is_internal_transfer(txn)) ) {
           if (!cat.hidden_on_cat_list) {
-            (<number>cat_amts[cat.name].total) += txn.txn_amount_credit - txn.txn_amount_debit;
+            (<number>cat_amts[cat.name].total) += txn.creditAmount - txn.debitAmount;
             cat_amts[cat.name].count++;
           }
         }
       });
     });
 
-    let lloyds_match = org_txns.filter( (txn) => txn.txn_src === 'Lloyds' );
+    let lloyds_match = org_txns.filter( (txn) => txn.source === 'Lloyds' );
 
     cat_amts['lloyds_match_in'] = {
       name: 'Lloyds Reconciliation - in',
       id: 'lloyds-match-in',
       className: 'lloyds-match',
-      total: lloyds_match.reduce((prev: number, next: Transaction) => { return prev + next.txn_amount_credit; }, 0),
-      count: lloyds_match.filter((txn) => txn.txn_amount_credit > 0).length
+      total: lloyds_match.reduce((prev: number, next: Transaction) => { return prev + next.creditAmount; }, 0),
+      count: lloyds_match.filter((txn) => txn.creditAmount > 0).length
     };
 
     cat_amts['lloyds_match_out'] = {
       name: 'Lloyds Reconciliation - out',
       id: 'lloyds-match-out',
       className: 'lloyds-match',
-      total: lloyds_match.reduce((prev: number, next: Transaction) => { return prev - next.txn_amount_debit; }, 0),
-      count: lloyds_match.filter((txn) => txn.txn_amount_debit > 0).length
+      total: lloyds_match.reduce((prev: number, next: Transaction) => { return prev - next.debitAmount; }, 0),
+      count: lloyds_match.filter((txn) => txn.debitAmount > 0).length
     };
 
     //XXX UGLY
@@ -161,17 +161,17 @@ export class ReportManager {
     let running_main: number = 0;
 
     txns.forEach((txn: Transaction) => {
-      if (!breakdown[txn.month]) {
-        console.log("no breakdown for month ", txn.month);
+      if (!breakdown[txn.calculatedMonth]) {
+        throw new Error("no breakdown for month " + txn.calculatedMonth);
       }
 
       txn.categories.forEach((cat: Category) => {
         if (cat.id === "income") {
-          breakdown[txn.month].in += txn.txn_amount_credit;
+          breakdown[txn.calculatedMonth].in += txn.creditAmount;
         } else if (cat.id === "main-income") {
-          breakdown[txn.month].main_in += txn.txn_amount_credit;
+          breakdown[txn.calculatedMonth].main_in += txn.creditAmount;
         } else if (cat.id === 'exp') {
-          breakdown[txn.month].out += Math.abs(txn.txn_amount_debit);
+          breakdown[txn.calculatedMonth].out += Math.abs(txn.debitAmount);
         }
       });
     });
