@@ -17,7 +17,7 @@ export class Categoriser {
   by_name(name: string): Category {
     let categories = this.categories;
 
-    return categories.find(function(c: Category): boolean { return c.name === name });
+    return categories.find((c: Category): boolean => c.name === name);
   }
 
   static is_internal_transfer(txn: Transaction): boolean {
@@ -27,14 +27,14 @@ export class Categoriser {
   static transaction_matches_rule(txn: Transaction, rule: CategoryRule): boolean {
     let match: boolean = true;
 
-    ['txn_type', 'txn_desc', 'txn_src'].forEach(function(prop: string) {
+    ['txn_type', 'txn_desc', 'txn_src'].forEach((prop: string) => {
       let match_config: StringMatchConfig = rule[prop];
       if (match_config) {
         match = match && RuleMatcher.parse_string_rules(txn[prop], match_config);
       }
     });
 
-    ['txn_amount_credit','txn_amount_debit'].forEach(function(prop: string) {
+    ['txn_amount_credit','txn_amount_debit'].forEach((prop: string) => {
       let match_config: NumericMatchConfig = rule[prop];
 
       if (match_config) {
@@ -57,7 +57,7 @@ export class Categoriser {
     let categories = this.categories;
     let matched: Category[] = [];
 
-    categories.forEach(function(category) {
+    categories.forEach((category) => {
       if (Categoriser.transaction_matches_rule(txn, category.category_rules)) {
         matched.push(category);
 

@@ -16,7 +16,7 @@ export class RBSCSVParser extends CSVParser {
 
   parseCSVRecords(records: any[]): any {
     records = super.parseCSVRecords(records);
-    records.forEach(function(record: any) {
+    records.forEach((record: any) => {
       record.acc_balance = +record.acc_balance;
       record.txn_amount  = +record.txn_amount;
 
@@ -29,7 +29,7 @@ export class RBSCSVParser extends CSVParser {
       }
 
       delete record.txn_amount;
-    }.bind(this));
+    });
 
     return records;
   }

@@ -15,7 +15,7 @@ describe('MidataCSVParser', () => {
 
     return new MidataCSVParser().parseCSVFile(
       buf.toString()
-    ).then(function (records) {
+    ).then((records) => {
       assert.ok(records);
       expect(records.length).to.equal(9);
 

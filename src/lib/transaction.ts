@@ -39,22 +39,22 @@ export class Transaction {
     }
   ) {
     let _validators: { [ idx: string ]: any } = {
-      'txn_amount_debit' : function(val: any) { return (!val || !isNaN(val)); },
-      'txn_amount_credit': function(val: any) { return (!val || !isNaN(val)); },
-      'acc_balance'      : function(val: any) { return !isNaN(val); },
+      'txn_amount_debit' : (val: any) => (!val || !isNaN(val)),
+      'txn_amount_credit': (val: any) => (!val || !isNaN(val)),
+      'acc_balance'      : (val: any) => !isNaN(val),
     };
 
     let _filters: { [idx: string]: any } = {
-      'txn_amount_debit': function(val: string | number) { return Number(val); },
-      'txn_amount_credit': function(val: string | number) { return Number(val); },
-      'txn_date': function(val: string) { return this._parse_date(val); }.bind(this),
+      'txn_amount_debit': (val: string | number) => Number(val),
+      'txn_amount_credit': (val: string | number) => Number(val),
+      'txn_date': (val: string) => this._parse_date(val),
     };
 
     if (record.txn_src) {
       this.txn_src = record.txn_src;
     }
 
-    Object.keys(record).forEach(function(key: string) {
+    Object.keys(record).forEach((key: string) => {
       this[key] = record[key];
 
       if (_filters[key]) {
@@ -65,7 +65,7 @@ export class Transaction {
           throw new Error(`Property '${key}' (${this[key]}) fails validation: ${_validators[key]} ${this} ${record}`);
         }
       }
-    }.bind(this));
+    });
 
     this.org_month = moment(this.txn_date).utc().format('YYYYMM');
 

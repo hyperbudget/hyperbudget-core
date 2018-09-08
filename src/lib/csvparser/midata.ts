@@ -14,7 +14,7 @@ export class MidataCSVParser extends CSVParser {
   /* overriden to get rid of empty line and stupid 'overdraft limit' */
   protected sanitiseInput(csv_filename: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      super.sanitiseInput(csv_filename).then(function(input) {
+      super.sanitiseInput(csv_filename).then((input: string) => {
         input = input.replace(/^\s+(.*)/m, '$1'); /* Stupid empty space before first line */
         input = input.replace(/^\n$/m, ''); /* Empty line */
         input = input.replace(/^$/m, ''); /* Empty line */
@@ -28,7 +28,7 @@ export class MidataCSVParser extends CSVParser {
   parseCSVRecords(records: any[]): any[] {
     records = super.parseCSVRecords(records);
 
-    records.forEach(function(record: any, idx: number) {
+    records.forEach((record: any, idx: number) => {
       if (!record.txn_amount) {
         records.splice(idx, 1);
       } else {
@@ -47,7 +47,7 @@ export class MidataCSVParser extends CSVParser {
 
         delete record.txn_amount;
       }
-    }.bind(this));
+    });
 
     return records;
   }

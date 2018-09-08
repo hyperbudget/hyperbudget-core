@@ -19,7 +19,7 @@ export class HSBCCSVParser extends CSVParser {
 
   parseCSVRecords(records: any[]): any[] {
     records = super.parseCSVRecords(records);
-    records.forEach(function(record: any, idx: number) {
+    records.forEach((record: any, idx: number) => {
       if (record.txn_amount) {
         record.txn_amount = record.txn_amount.replace(/,/g, '');
 
@@ -49,7 +49,7 @@ export class HSBCCSVParser extends CSVParser {
       } else {
         records.splice(idx, 1);
       }
-    }.bind(this));
+    });
 
     return records;
   }

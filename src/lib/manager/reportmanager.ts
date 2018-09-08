@@ -5,11 +5,9 @@ import { FormattedTransaction } from '../../types/formatted-transaction';
 import { CategoryAmounts } from '../../types/category-amounts';
 
 import { Utils } from '../utils';
-import { CSVParserManager } from './csvparsermanager';
 import ReportFactory from '../report';
 
 import moment from 'moment';
-import parse from 'csv-parse';
 import { BreakdownFormatted, Breakdown } from '../../types/breakdown';
 
 /**
@@ -69,7 +67,7 @@ export class ReportManager {
     let formatted: FormattedTransaction[] = JSON.parse(JSON.stringify(txns));
     let running_total_spend: number = 0;
 
-    formatted.forEach(function(formatted_txn: FormattedTransaction) {
+    formatted.forEach((formatted_txn: FormattedTransaction) => {
       formatted_txn.cat_class      = formatted_txn.categories.map((c: Category) => c.className).join(" ");
       formatted_txn.category_names = formatted_txn.categories.filter((c: Category) => !c.hidden_on_txn_list)
       .map((c:Category) => c.name).join(", ");
@@ -97,14 +95,14 @@ export class ReportManager {
 
     let cats: Category[] = categoriser.categories
 
-    cats.forEach(function(c) {
+    cats.forEach((c: Category) => {
       if (!c.hidden_on_cat_list) {
         cat_amts[c.name] = { name: c.name, total: 0, className: c.className, count: 0 };
       }
     });
 
-    txns.forEach(function(txn) {
-      txn.categories.forEach(function(cat) {
+    txns.forEach((txn: Transaction) => {
+      txn.categories.forEach((cat: Category) => {
         // It's the category being listed isn't internal_transfer but the txn cat is, skipit.
         if (! (cat.id !== 'tfr-pers' && Categoriser.is_internal_transfer(txn)) ) {
           if (!cat.hidden_on_cat_list) {
@@ -155,19 +153,19 @@ export class ReportManager {
   static generate_monthly_breakdown (txns: Transaction[], months: string[]): Breakdown {
     let breakdown: Breakdown = {};
 
-    months.forEach(function(month: string) {
+    months.forEach((month: string) => {
       breakdown[month] = { in: 0, main_in: 0, out: 0, gains: 0, main_gains: 0, running: 0, running_main: 0};
     });
 
     let running: number = 0;
     let running_main: number = 0;
 
-    txns.forEach(function(txn) {
+    txns.forEach((txn: Transaction) => {
       if (!breakdown[txn.month]) {
         console.log("no breakdown for month ", txn.month);
       }
 
-      txn.categories.forEach(function(cat) {
+      txn.categories.forEach((cat: Category) => {
         if (cat.id === "income") {
           breakdown[txn.month].in += txn.txn_amount_credit;
         } else if (cat.id === "main-income") {
@@ -178,7 +176,7 @@ export class ReportManager {
       });
     });
 
-    months.forEach(function(month) {
+    months.forEach((month: string) => {
       breakdown[month].gains = breakdown[month].in - breakdown[month].out;
       breakdown[month].main_gains = breakdown[month].main_in - breakdown[month].out;
 

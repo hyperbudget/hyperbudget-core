@@ -21,7 +21,7 @@ describe('ReportFactory', () => {
       'txn_amount_debit': 0,
       'acc_balance': '1000',
       'txn_desc': 'Some Transaction',
-    }]).then(function() {
+    }]).then(() => {
       let report = rf.report;
 
       assert.ok(report);
@@ -59,20 +59,20 @@ describe('ReportFactory', () => {
         'acc_balance': 850,
         'txn_desc': 'Second September Transaction',
       }
-    ]).then(function() {
+    ]).then(() => {
       let report = rf.report;
       report.filter_month('201709');
 
       expect(report).to.have.property('transactions').with.lengthOf(2);
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='First September Transaction';})).to.be.true;
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='Second September Transaction';})).to.be.true;
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='January Transaction';})).to.be.false;
+      expect(!!report.transactions.find((txn) => {return txn.txn_desc==='First September Transaction';})).to.be.true;
+      expect(!!report.transactions.find((txn) => {return txn.txn_desc==='Second September Transaction';})).to.be.true;
+      expect(!!report.transactions.find((txn) => {return txn.txn_desc==='January Transaction';})).to.be.false;
 
       report.filter_month('201701');
       expect(report).to.have.property('transactions').with.lengthOf(1);
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='First September Transaction';})).to.be.false;
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='Second September Transaction';})).to.be.false;
-      expect(!!report.transactions.find(function(txn){return txn.txn_desc==='January Transaction';})).to.be.true;
+      expect(!!report.transactions.find((txn) => {return txn.txn_desc==='First September Transaction';})).to.be.false;
+      expect(!!report.transactions.find((txn) => {return txn.txn_desc==='Second September Transaction';})).to.be.false;
+      expect(!!report.transactions.find((txn) => {return txn.txn_desc==='January Transaction';})).to.be.true;
 
       report.filter_month('201801');
       expect(report).to.have.property('transactions').with.lengthOf(0);
@@ -122,7 +122,7 @@ describe('ReportFactory', () => {
         acc_balance: 1000,
         txn_desc: 'January Transaction',
       }
-    ]).then(function() {
+    ]).then(() => {
       let report = rf.report;
       expect(report).to.have.property('transactions').with.lengthOf(3);
       expect(moment(report.transactions[0].txn_date).isSame(moment('2017-01-01T00:00:00Z'))).to.be.true;
@@ -149,7 +149,7 @@ describe('ReportFactory', () => {
           txn_amount_debit: 150,
           txn_desc: 'January Transaction',
         }
-      ]).then(function() {
+      ]).then(() => {
         let report = rf.report;
 
         expect(report).to.have.property('transactions').with.lengthOf(2);
@@ -190,7 +190,7 @@ describe('ReportFactory', () => {
               'txn_desc': 'January Transaction',
             },
           ])
-        }).then(function() {
+        }).then(() => {
           let report = rf.report;
           expect(report).to.have.property('transactions').with.lengthOf(2);
           expect(report.transactions[0].acc_balance).to.equal(1000);

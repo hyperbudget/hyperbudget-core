@@ -70,9 +70,9 @@ export class ReportFactory {
   }
 
   from_csv(csv_text: string, type: string): Promise<void> {
-    return CSVParserManager.parseCSVFile(csv_text, type).then(function(records: any[]){
+    return CSVParserManager.parseCSVFile(csv_text, type).then((records: any[]) => {
       return this.add_records(records);
-    }.bind(this));
+    });
   }
 
   from_records(records: any[]): Promise<void> {
@@ -82,7 +82,7 @@ export class ReportFactory {
   add_records(records: any[]): Promise<void> {
     let transactions: Transaction[] = [];
 
-    records.forEach(function(record: any) {
+    records.forEach((record: any) => {
       let txn:Transaction = new Transaction(record);
 
       //unique only
@@ -91,7 +91,7 @@ export class ReportFactory {
       }
 
       this._txnSeenIdentifierMap[txn.identifier] = true;
-    }.bind(this));
+    });
 
     this.report.add_transactions(transactions);
 
