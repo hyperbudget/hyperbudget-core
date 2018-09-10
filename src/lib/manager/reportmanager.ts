@@ -4,7 +4,7 @@ import { Category } from '../../types/category';
 import { FormattedTransaction } from '../../types/formatted-transaction';
 import { CategoryAmounts } from '../../types/category-amounts';
 
-import { Utils } from '../utils';
+import * as Utils from '../utils';
 import ReportFactory from '../report';
 
 import moment from 'moment';
