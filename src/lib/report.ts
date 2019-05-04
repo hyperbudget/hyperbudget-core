@@ -72,8 +72,6 @@ class ReportImpl implements Report {
   applyFilter(): Report {
     this.resetFilter();
 
-    console.log(this.reportFilter);
-
     if (this.reportFilter.month) {
       this.transactionsInCalendarMonth = this.unfilteredTransactions.filter(txn => txn.calendarMonth === this.reportFilter.month);
       this.transactions = this.transactions.filter(txn => txn.calculatedMonth === this.reportFilter.month);
