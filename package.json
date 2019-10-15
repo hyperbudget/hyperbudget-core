@@ -33,7 +33,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "csv-parse": "^2.4.0",
+    "csv-parse": "^4.4.6",
     "jsonschema": "^1.2.4",
     "moment": "^2.22.1",
     "path": "^0.12.7",
