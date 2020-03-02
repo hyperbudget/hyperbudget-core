@@ -9,6 +9,6 @@ export type CategoryRule = {
   source?: StringMatchConfig;
   debitAmount?: NumericMatchConfig;
   creditAmount?: NumericMatchConfig;
-  mode?: RuleMatchMode = RuleMatchMode.Strict;
+  mode?: RuleMatchMode;
   [key: string]: any,
 };
